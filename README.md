@@ -1,5 +1,4 @@
-# numberBaseConverter (wip) - currently supporting bases 2, 8, 10, 16
-Converts numbers to other bases (i. e. decimal number to octal one, hexadecimal to binary)
-1. Choose whether you want to convert /from decimal or /to decimal (to quit type /exit).
-2. Follow instructions.
-3. The number gets converted and you can convert another one :)
+# numberBaseConverter (wip) - supporting bases up to 36
+1. Enter two numbers in format: {source base} {target base} (To quit type /exit)
+2. Enter number to convert.
+3. The number gets converted :) You can convert another one with the same source and target bases or go back to choosing them by typing /back
