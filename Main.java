@@ -1,70 +1,58 @@
+import java.math.BigInteger;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         boolean exit = false;
+        boolean back = false;
+        int sourceBase = 0;
+        int targetBase = 0;
         do {
-            System.out.println("Do you want to convert /from decimal or /to decimal? (To quit type /exit)");
-            Scanner scanner = new Scanner(System.in);
-            String move = scanner.nextLine();
-            switch (move) {
-                case "/from":
-                    System.out.println("Enter a number in decimal system:");
-                    int baseTenNumber = scanner.nextInt();
-                    System.out.println("Enter target base:");
-                    int targetBase = scanner.nextInt();
-                    System.out.println("Conversion result: " + convertBaseTenToAny(baseTenNumber, targetBase));
-                    break;
-                case "/to":
-                    System.out.println("Enter source number:");
-                    String anyBaseNumber = scanner.nextLine();
-                    System.out.println("Enter source base:");
-                    int sourceBase = scanner.nextInt();
-                    System.out.println("Conversion to decimal result: " + convertBaseAnyToTen(anyBaseNumber, sourceBase));
-                    break;
-                case "/exit":
-                    exit = true;
-                    break;
+            System.out.println("Enter two numbers in format: {source base} {target base} (To quit type /exit)");
+            String scannedValues[] = scanner.nextLine().split(" ");
+            if (scannedValues.length == 2) {
+                sourceBase = Integer.valueOf(scannedValues[0]);
+                targetBase = Integer.valueOf(scannedValues[1]);
+                do {
+                    System.out.println("Enter number in base " + sourceBase + " to convert to base " + targetBase + " (To go back type /back)");
+                    String scannedValueOnSecondLevel = scanner.nextLine();
+
+                    if (scannedValueOnSecondLevel.equals("/back")) {
+                        break;
+                    } else {
+                        BigInteger resultAtBaseTen = convertBaseAnyToTen(scannedValueOnSecondLevel, sourceBase);
+                        String resultFinal = convertBaseTenToAny(resultAtBaseTen, targetBase);
+                        System.out.println("Conversion result: " + resultFinal);
+                    }
+
+                } while (!back);
+            } else {
+                break;
             }
+
         } while (!exit);
     }
-    
-    public static String convertBaseTenToAny(int baseTenNumber, int base) {
+
+    public static String convertBaseTenToAny(BigInteger baseTenNumber, int base) {
         String result = "";
-        int remainder = 0;
+        BigInteger remainder = BigInteger.ZERO;
         do {
-            remainder = baseTenNumber % base;
-            baseTenNumber /= base;
-            switch (remainder) {
-                case 10:
-                    result = "a".concat(result);
-                    break;
-                case 11:
-                    result = "b".concat(result);
-                    break;
-                case 12:
-                    result = "c".concat(result);
-                    break;
-                case 13:
-                    result = "d".concat(result);
-                    break;
-                case 14:
-                    result = "e".concat(result);
-                    break;
-                case 15:
-                    result = "f".concat(result);
-                    break;
-                default:
-                    result = Integer.toString(remainder).concat(result);
+            remainder = baseTenNumber.remainder(BigInteger.valueOf(base));
+            baseTenNumber = baseTenNumber.divide(BigInteger.valueOf(base));
+            if (remainder.compareTo(BigInteger.TEN) >= 0) {
+                result = Character.toString(remainder.intValue() + 87).concat(result);
+            } else {
+                result = remainder.toString().concat(result);
             }
-        } while (baseTenNumber > 0);
+
+        } while (baseTenNumber.compareTo(BigInteger.ZERO) > 0);
 
         return result;
     }
 
-    public static int convertBaseAnyToTen(String anyBaseNumber, int base) {
-        return Integer.parseInt(anyBaseNumber, base);
-
+    public static BigInteger convertBaseAnyToTen(String anyBaseNumber, int base) {
+        return new BigInteger(anyBaseNumber, base);
     }
 
 }
